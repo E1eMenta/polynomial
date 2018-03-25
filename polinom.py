@@ -1,5 +1,15 @@
 class Polynomial:
     def __init__(self, coeffs):
+        if (type(coeffs) == float or
+            type(coeffs) == int):
+            coeffs = [coeffs]
+        elif(type(coeffs) == list):
+            pass
+        elif(coeffs.__class__.__name__ == "Polynomial"):
+            coeffs = coeffs.coeffs
+        else:
+            raise Exception("Unsupported type {}".format(type(coeffs)))
+
         assert len(coeffs) != 0, "Empty polynomial"
 
         self.coeffs = coeffs
@@ -7,6 +17,7 @@ class Polynomial:
             del self.coeffs[0]
 
     def __add__(self, other):
+        other = Polynomial(other)
         my_len = len(self)
         other_len = len(other)
 
@@ -21,8 +32,13 @@ class Polynomial:
 
         return Polynomial(out_coeffs)
 
+    def __radd__(self, other):
+        other = Polynomial(other)
+        return self + other
+
     def __sub__(self, other):
         my_len = len(self)
+        other = Polynomial(other)
         other_len = len(other)
 
         if my_len > other_len:
@@ -36,7 +52,12 @@ class Polynomial:
 
         return Polynomial(out_coeffs)
 
+    def __rsub__(self, other):
+        other = Polynomial(other)
+        return -1 * self + other
+
     def __mul__(self, other):
+        other = Polynomial(other)
         out_coeffs = [0] * (len(self) + len(other))
 
         for idx1, c1 in enumerate(reversed(self.coeffs)):
@@ -46,6 +67,10 @@ class Polynomial:
         out_coeffs = list(reversed(out_coeffs))
 
         return Polynomial(out_coeffs)
+
+    def __rmul__(self, other):
+        other = Polynomial(other)
+        return self * other
 
     def __eq__(self, other):
         if len(self) != len(other):
@@ -61,4 +86,18 @@ class Polynomial:
         return len(self.coeffs)
 
     def __str__(self):
-        return str(self.coeffs)
+        max_d = len(self.coeffs) - 1
+        out = ""
+        for i, c in enumerate(self.coeffs[:-2]):
+            out += str(self.coeffs[i]) + "x^" + str(max_d - i)
+            if self.coeffs[i + 1] > 0:
+                out += "+"
+
+        if max_d > 0:
+            out += str(self.coeffs[-2]) + "x"
+            if self.coeffs[-1] > 0:
+                out += "+"
+
+        out += str(self.coeffs[-1])
+
+        return out
