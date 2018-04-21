@@ -95,6 +95,15 @@ class SumTest(TestCase):
         assert p43 != Polynomial(out43)
         assert p42 != Polynomial(out42)
 
+    def test_strings(self):
+        p1 = Polynomial([1])
+        p2 = Polynomial([-1, 3, 56, 1])
+        p3 = Polynomial([2, 34, 5, -1])
+
+        assert p1.__str__() == "1"
+        assert p2.__str__() == "-1x^3+3x^2+56x+1"
+        assert p3.__str__() == "2x^3+34x^2+5x-1"
+
 
 if __name__ == '__main__':
     main()
